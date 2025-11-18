@@ -1,6 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const limiter = require("./middleware/appLimiterMW");
+const cors = require("cors");
 const authRoutes = require("./routers/auth");
 const businessRoutes = require("./routers/businessRoutes");
 const dotenv = require("dotenv");
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 
