@@ -6,10 +6,12 @@ const {
   createSession,
 } = require("../controllers/classSessionController");
 
+const { auth, requireRole } = require("../middleware/authMW");
+
 
 
 router.get("/", listSessions);
 router.get("/:id", getSession);
-router.post("/", createSession);
+router.post("/", auth, requireRole("business","admin"), createSession);
 
 module.exports = router;

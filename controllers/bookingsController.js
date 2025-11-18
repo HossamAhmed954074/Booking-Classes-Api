@@ -6,9 +6,12 @@ const CreditTransaction = require("../models/creditTransictionModel");
 const Notification = require("../models/notificationModel");
 const { getIdempotency, setIdempotency } = require("../utils/idempotency");
 const { mongoose: mongooseInstance } = require("../data/db");
+const asyncFnWrapper = require("../middleware/asyncWraper");
+const appError = require("../errors/appError");
+const httpStatusConstnts = require("../utils/httpStatusConstant");
 
 // POST /bookings (create booking with transactional safety)
-async function createBooking(req, res) {
+const createBooking = asyncFnWrapper(async (req, res, next) => {
   // idempotency key support
   const idem = req.headers["idempotency-key"];
   if (idem) {
@@ -18,7 +21,9 @@ async function createBooking(req, res) {
 
   const sessionId = req.body.sessionId;
   if (!sessionId)
-    return res.status(400).json({ message: "sessionId required" });
+    return next(
+      appError.create("sessionId is required", httpStatusConstnts.BAD_REQUEST)
+    );
 
   // start transaction (requires replica set in Mongo)
   const session = await mongooseInstance.startSession();
@@ -29,26 +34,42 @@ async function createBooking(req, res) {
       .exec();
     if (!classSession) {
       await session.abortTransaction();
-      return res.status(404).json({ message: "Class session not found" });
+      return next(
+        appError.create("Class session not found", httpStatusConstnts.NOT_FOUND)
+      );
     }
     if (classSession.status !== "scheduled") {
       await session.abortTransaction();
-      return res.status(400).json({ message: "Class not available" });
+      return next(
+        appError.create(
+          "Class session is not available for booking",
+          httpStatusConstnts.CONFLICT
+        )
+      );
     }
     if (classSession.bookedSpots >= classSession.capacity) {
       await session.abortTransaction();
-      return res.status(409).json({ message: "Class is full" });
+      return next(
+        appError.create("Class is full", httpStatusConstnts.CONFLICT)
+      );
     }
 
     // check user's credits
     const user = await User.findById(req.user._id).session(session);
     if (!user) {
       await session.abortTransaction();
-      return res.status(404).json({ message: "User not found" });
+      return next(
+        appError.create("User not found", httpStatusConstnts.NOT_FOUND)
+      );
     }
     if ((user.credits || 0) < classSession.credits) {
       await session.abortTransaction();
-      return res.status(402).json({ message: "Insufficient credits" });
+      return next(
+        appError.create(
+          "Insufficient credits",
+          httpStatusConstnts.PAYMENT_REQUIRED
+        )
+      );
     }
 
     // create booking
@@ -116,30 +137,42 @@ async function createBooking(req, res) {
     await session.abortTransaction();
     session.endSession();
     if (err.code === 11000)
-      return res.status(409).json({ message: "Duplicate booking" });
+      return next(
+        appError.create(
+          "Duplicate booking detected",
+          httpStatusConstnts.CONFLICT
+        )
+      );
     console.error("Booking error", err);
-    return res
-      .status(500)
-      .json({ message: "Booking failed", error: err.message });
+    return next(
+      appError.create(
+        "Booking failed",
+        httpStatusConstnts.INTERNAL_SERVER_ERROR
+      )
+    );
   }
-}
+});
 
-async function listBookings(req, res) {
+const listBookings = asyncFnWrapper(async (req, res, next) => {
+    console.log("User role:", req.user.role);
   const { page = 1, limit = 20, status } = req.query;
   const filter = {};
+  // the role check here 
+  console.log("User role:", req.user.role);
   if (req.user.role === "customer") filter.userId = req.user._id;
+  console.log("User role:", req.user.role, "User ID:", req.user._id);
   if (status) filter.status = status;
   const items = await Booking.find(filter)
     .skip((page - 1) * limit)
     .limit(parseInt(limit))
     .lean();
   res.json({ items, page: parseInt(page), limit: parseInt(limit) });
-}
+});
 
-async function getBooking(req, res) {
+const getBooking = asyncFnWrapper(async (req, res, next) => {
   const b = await Booking.findById(req.params.id).lean();
   if (!b) return res.status(404).json({ message: "Booking not found" });
   res.json(b);
-}
+});
 
 module.exports = { createBooking, listBookings, getBooking };
