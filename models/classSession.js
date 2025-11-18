@@ -29,4 +29,4 @@ const classSessionSchema = new SCS({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
-module.exports = MCS("ClassSession", classSessionSchema);
+module.exports = MCS("class_session", classSessionSchema);

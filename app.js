@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRoutes = require("./routers/auth");
 const businessRoutes = require("./routers/businessRoutes");
 const classSessionRoutes = require("./routers/classSessionRouters");
+const instructorRoutes = require("./routers/instructorsRoutes");
 const dotenv = require("dotenv");
 const httpStatusConstant = require("./utils/httpStatusConstant");
 const { connectDB } = require("./data/db");
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/businesses", businessRoutes);
 app.use("/api/v1/class-sessions", classSessionRoutes);
+app.use("/api/v1/instructors", instructorRoutes);
 // fallback handler for unknown routes
 // use app.use with no path so we don't pass a string route into path-to-regexp
 app.use((req, res) => {
