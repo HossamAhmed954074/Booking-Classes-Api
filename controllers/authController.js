@@ -86,7 +86,7 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
 
   const token = existingUser.genAuthToken();
   res.header("x-auth-token", token);
-  res.status(200).json({ message: "Login successful" });
+  res.status(200).json({ message: "Login successful" , token});
 });
 
 module.exports = {
