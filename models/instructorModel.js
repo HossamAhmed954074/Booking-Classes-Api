@@ -1,7 +1,7 @@
-const { Schema: SI, model: MI } = require("mongoose");
-const instructorSchema = new SI({
-  userId: { type: SI.Types.ObjectId, ref: "User" },
-  businessId: { type: SI.Types.ObjectId, ref: "Business" },
+const mongoose = require("mongoose");
+const instructorSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business" , required: true},
   name: String,
   bio: String,
   specialties: [String],
@@ -12,4 +12,4 @@ const instructorSchema = new SI({
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
 });
-module.exports = MI("instructor", instructorSchema);
+module.exports = mongoose.model("instructor", instructorSchema);

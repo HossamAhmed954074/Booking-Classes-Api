@@ -5,7 +5,7 @@ const Instructor = require("../models/instructorModel");
 
 
 const listInstructors = asyncFnWrapper(async (req, res, next) => {
-  const instructors = await Instructor.find({}).lean();
+  const instructors = await Instructor.find();
   res.json({ items: instructors });
 });
 
@@ -13,7 +13,7 @@ const getInstructor = asyncFnWrapper(async (req, res, next) => {
   const instructor = await Instructor.findById(req.params.id).lean();
   if (!instructor)
     return next(
-      new appError.create(
+       appError.create(
         "Instructor not found",
         httpStatusConstnts.NOT_FOUND
       )
@@ -23,6 +23,14 @@ const getInstructor = asyncFnWrapper(async (req, res, next) => {
 
 const createInstructor = asyncFnWrapper(async (req, res, next) => {
   const payload = req.body;
+  const existingInstructor = await Instructor.findOne({ email: payload.email });
+  if (existingInstructor)
+    return next(
+      appError.create(
+        "Instructor with this userId already exists",
+        httpStatusConstnts.BAD_REQUEST
+      )
+    );
   const instructor = await Instructor.create(payload);
   res.status(201).json(instructor);
 });
