@@ -14,7 +14,8 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
       appError.create("All fields are required", 401, httpStatusConstnts.BAD_REQUEST)
     );
   }
-  if (!validator.isEmail(email)) {
+  const isEmailValid = validator.isEmail(email);
+  if (!isEmailValid) {
     return next(
       appError.create("Invalid email format", 401 , httpStatusConstnts.BAD_REQUEST)
     );
