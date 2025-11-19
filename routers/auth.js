@@ -8,4 +8,7 @@ router.post('/register', authController.registerUser);
 // User login route
 router.post('/login', authController.loginUser);
 
+// Get current user route
+router.get('/me', authController.getCurrentUser);
+
 module.exports = router;

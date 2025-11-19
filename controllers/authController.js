@@ -93,7 +93,19 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
   res.status(200).json({ message: "Login successful" , token});
 });
 
+const getCurrentUser = asyncFnWrapper(async (req, res, next) => {
+  const userId = req.user.id;
+  const currentUser = await user.findById(userId).select("-password");
+  if (!currentUser) {
+    return next(
+      appError.create("User not found", 401, httpStatusConstnts.NOT_FOUND)
+    );
+  }
+  res.status(200).json(currentUser);
+});
+
 module.exports = {
   registerUser,
   loginUser,
+  getCurrentUser,
 };
