@@ -11,12 +11,12 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
 
   if (!name || !email || !password || !phone) {
     return next(
-      appError.create("All fields are required", httpStatusConstnts.BAD_REQUEST)
+      appError.create("All fields are required", 401, httpStatusConstnts.BAD_REQUEST)
     );
   }
   if (!validator.isEmail(email)) {
     return next(
-      appError.create("Invalid email format", httpStatusConstnts.BAD_REQUEST)
+      appError.create("Invalid email format", 401 , httpStatusConstnts.BAD_REQUEST)
     );
   }
 
@@ -24,7 +24,7 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
   const existingUser = await user.findOne({ email });
   if (existingUser) {
     return next(
-      appError.create("User already exists", httpStatusConstnts.BAD_REQUEST)
+      appError.create("User already exists", 401 ,httpStatusConstnts.BAD_REQUEST)
     );
   }
 
@@ -51,14 +51,14 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
   if (!email || !password) {
     return next(
       appError.create(
-        "Email and password are required",
+        "Email and password are required",401,
         httpStatusConstnts.BAD_REQUEST
       )
     );
   }
   if (!validator.isEmail(email)) {
     return next(
-      appError.create("Invalid email format", httpStatusConstnts.BAD_REQUEST)
+      appError.create("Invalid email format", 401 , httpStatusConstnts.BAD_REQUEST)
     );
   }
 
@@ -67,7 +67,7 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
   if (!existingUser) {
     return next(
       appError.create(
-        "Invalid email or password",
+        "Invalid email or password",401,
         httpStatusConstnts.BAD_REQUEST
       )
     );
@@ -78,7 +78,8 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
   if (!isMatch) {
     return next(
       appError.create(
-        "Invalid email or password",
+        "Invalid email or password",401
+        ,
         httpStatusConstnts.BAD_REQUEST
       )
     );
