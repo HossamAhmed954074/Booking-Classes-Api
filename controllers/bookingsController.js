@@ -156,13 +156,12 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
 });
 
 const listBookings = asyncFnWrapper(async (req, res, next) => {
-    console.log("User role:", req.user.role);
+   
   const { page = 1, limit = 20, status } = req.query;
   const filter = {};
   // the role check here 
-  console.log("User role:", req.user.role);
+ 
   if (req.user.role === "customer") filter.userId = req.user._id;
-  console.log("User role:", req.user.role, "User ID:", req.user._id);
   if (status) filter.status = status;
   const items = await Booking.find(filter)
     .skip((page - 1) * limit)
