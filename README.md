@@ -1042,8 +1042,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 **Hossam Ahmed**
 
 - 🔗 GitHub: [@HossamAhmed954074](https://github.com/HossamAhmed954074)
-- 📧 Email: [your.email@example.com](mailto:your.email@example.com)
-- 💼 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- 📧 Email: [eltohamehossam@gmail.com](mailto:your.email@example.com)
+- 💼 LinkedIn: [https://www.linkedin.com/in/hossam-ahmed-ab4987248/](https://linkedin.com/in/yourprofile)
 
 ### Support
 
