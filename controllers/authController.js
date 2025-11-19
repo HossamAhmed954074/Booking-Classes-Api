@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const appError = require("../errors/appError");
 const httpStatusConstnts = require("../utils/httpStatusConstant");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 // create user
 const registerUser = asyncFnWrapper(async (req, res, next) => {
@@ -102,7 +103,9 @@ const getCurrentUser = asyncFnWrapper(async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  
+    
+    const decoded =   jwt.verify(token, process.env.JWT_SECRET);    
     const currentUser = await user.findById(decoded.id).select("-password");
     if (!currentUser) {
       return next(
