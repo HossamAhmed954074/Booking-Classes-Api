@@ -94,14 +94,27 @@ const loginUser = asyncFnWrapper(async (req, res, next) => {
 });
 
 const getCurrentUser = asyncFnWrapper(async (req, res, next) => {
-  const userId = req.user.id;
-  const currentUser = await user.findById(userId).select("-password");
-  if (!currentUser) {
+  const token = req.query.token || req.headers["x-auth-token"];
+  if (!token) {
     return next(
-      appError.create("User not found", 401, httpStatusConstnts.NOT_FOUND)
+      appError.create("Authentication token is required", 401, httpStatusConstnts.UNAUTHORIZED)
     );
   }
-  res.status(200).json(currentUser);
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const currentUser = await user.findById(decoded.id).select("-password");
+    if (!currentUser) {
+      return next(
+        appError.create("User not found", 401, httpStatusConstnts.NOT_FOUND)
+      );
+    }
+    res.status(200).json({ user: currentUser });
+  } catch (err) {
+    return next(
+      appError.create("Invalid or expired token", 401, httpStatusConstnts.UNAUTHORIZED)
+    );
+  }
 });
 
 module.exports = {
