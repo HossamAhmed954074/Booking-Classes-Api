@@ -20,8 +20,8 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
     );
   }
 
-  // Check if user already exists
-  const existingUser = await user.findOne({ email });
+  // Check if user already exists by email and phone
+  const existingUser = await user.findOne({ $or: [{ email }, { phone }] });
   if (existingUser) {
     return next(
       appError.create("User already exists", 401 ,httpStatusConstnts.BAD_REQUEST)
@@ -39,8 +39,10 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
     password: hashedPassword,
     phone,
   });
-
+  
+  
   await newUser.save();
+  
 
   res.status(201).json({ message: "User registered successfully" });
 });
