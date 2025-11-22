@@ -5,8 +5,8 @@ const bookingSchema = new SB({
   sessionId: { type: SB.Types.ObjectId, ref: "ClassSession", index: true },
   status: {
     type: String,
-    enum: ["pending", "confirmed", "cancelled", "declined"],
     default: "pending",
+    enum: ["pending", "confirmed", "cancelled", "declined"],
     index: true,
   },
   credits: Number,

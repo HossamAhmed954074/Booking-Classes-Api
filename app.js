@@ -12,6 +12,7 @@ const dotenv = require("dotenv");
 const httpStatusConstant = require("./utils/httpStatusConstant");
 const { connectDB } = require("./data/db");
 
+
 dotenv.config();
 
 const app = express();

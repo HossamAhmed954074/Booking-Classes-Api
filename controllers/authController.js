@@ -21,6 +21,19 @@ const registerUser = asyncFnWrapper(async (req, res, next) => {
       appError.create("Invalid email format", 401 , httpStatusConstnts.BAD_REQUEST)
     );
   }
+  const isPasswordValid = validator.isStrongPassword(password);
+  if (!isPasswordValid) {
+    return next(
+      appError.create("Invalid password format", 401 , httpStatusConstnts.BAD_REQUEST)
+    );
+  }
+
+  const isPhoneValid = validator.isMobilePhone(phone);
+  if (!isPhoneValid) {
+    return next(
+      appError.create("Invalid phone format", 401 , httpStatusConstnts.BAD_REQUEST)
+    );
+  }
 
   // Check if user already exists by email and phone
   const existingUser = await user.findOne({ $or: [{ email }, { phone }] });
