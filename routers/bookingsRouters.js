@@ -24,7 +24,7 @@ router.delete(
   bookingController.deleteBooking
 );
 router.put(
-  "/:id/confirm",
+  "/:id/confirmOrCancel",
   auth,
   requireRole("business"),
   bookingController.confirmOrCancelBooking
