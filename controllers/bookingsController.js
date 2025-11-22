@@ -79,11 +79,10 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
           userId: user._id,
           businessId: classSession.businessId,
           sessionId: classSession._id,
-          status: "confirmed",
+          status: "pending",
           credits: classSession.credits,
           bookingDate: classSession.date,
           notes: req.body.notes || null,
-          confirmedAt: new Date(),
         },
       ],
       { session }
