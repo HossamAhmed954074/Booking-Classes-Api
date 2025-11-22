@@ -22,7 +22,11 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
   const sessionId = req.body.sessionId;
   if (!sessionId)
     return next(
-      appError.create("sessionId is required", 401, httpStatusConstnts.BAD_REQUEST)
+      appError.create(
+        "sessionId is required",
+        401,
+        httpStatusConstnts.BAD_REQUEST
+      )
     );
 
   // start transaction (requires replica set in Mongo)
@@ -35,7 +39,11 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
     if (!classSession) {
       await session.abortTransaction();
       return next(
-        appError.create("Class session not found", 401, httpStatusConstnts.NOT_FOUND)
+        appError.create(
+          "Class session not found",
+          401,
+          httpStatusConstnts.NOT_FOUND
+        )
       );
     }
     if (classSession.status !== "scheduled") {
@@ -66,7 +74,8 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
       await session.abortTransaction();
       return next(
         appError.create(
-          "Insufficient credits", 401,
+          "Insufficient credits",
+          401,
           httpStatusConstnts.PAYMENT_REQUIRED
         )
       );
@@ -155,11 +164,10 @@ const createBooking = asyncFnWrapper(async (req, res, next) => {
 });
 
 const listBookings = asyncFnWrapper(async (req, res, next) => {
-   
   const { page = 1, limit = 20, status } = req.query;
   const filter = {};
-  // the role check here 
- 
+  // the role check here
+
   if (req.user.role === "customer") filter.userId = req.user._id;
   if (status) filter.status = status;
   const items = await Booking.find(filter)
@@ -171,10 +179,14 @@ const listBookings = asyncFnWrapper(async (req, res, next) => {
 
 const getBooking = asyncFnWrapper(async (req, res, next) => {
   const b = await Booking.findById(req.params.id).lean();
-  if (!b) return next(
-    appError.create("Booking not found", 401, httpStatusConstnts.NOT_FOUND)
-  );
-  if (req.user.role === "customer" && b.userId.toString() !== req.user._id.toString()) {
+  if (!b)
+    return next(
+      appError.create("Booking not found", 401, httpStatusConstnts.NOT_FOUND)
+    );
+  if (
+    req.user.role === "customer" &&
+    b.userId.toString() !== req.user._id.toString()
+  ) {
     return next(
       appError.create("Access denied", 401, httpStatusConstnts.FORBIDDEN)
     );
@@ -182,4 +194,53 @@ const getBooking = asyncFnWrapper(async (req, res, next) => {
   res.json(b);
 });
 
-module.exports = { createBooking, listBookings, getBooking };
+const updateBooking = asyncFnWrapper(async (req, res, next) => {
+  const b = await Booking.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  if (!b)
+    return next(
+      appError.create("Booking not found", 401, httpStatusConstnts.NOT_FOUND)
+    );
+  res.json(b);
+});
+
+const confirmOrCancelBooking = asyncFnWrapper(async (req, res, next) => {
+  const { status } = req.body;
+  if (status !== "confirmed" && status !== "cancelled")
+    return next(
+      appError.create(
+        "Invalid status",
+        401,
+        httpStatusConstnts.BAD_REQUEST
+      )
+    );
+  const b = await Booking.findByIdAndUpdate(
+    req.params.id,
+    { status },
+    { new: true }
+  );
+  if (!b)
+    return next(
+      appError.create("Booking not found", 401, httpStatusConstnts.NOT_FOUND)
+    );
+  res.json(b);
+});
+
+const deleteBooking = asyncFnWrapper(async (req, res, next) => {
+  const b = await Booking.findByIdAndDelete(req.params.id);
+  if (!b)
+    return next(
+      appError.create("Booking not found", 401, httpStatusConstnts.NOT_FOUND)
+    );
+  res.json(b);
+});
+
+module.exports = {
+  createBooking,
+  listBookings,
+  getBooking,
+  updateBooking,
+  confirmOrCancelBooking,
+  deleteBooking,
+};

@@ -45,4 +45,19 @@ const createSession = asyncFnWrapper(async (req, res, next) => {
   res.status(201).json(s);
 });
 
-module.exports = { listSessions, getSession, createSession };
+const updateSession = asyncFnWrapper(async (req, res, next) => {
+  const s = await ClassSession.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  if (!s)
+    return next(
+      appError.create(
+        "Class Session not found",
+        401,
+        httpStatusConstnts.NOT_FOUND
+      )
+    );
+  res.json(s);
+});
+
+module.exports = { listSessions, getSession, createSession, updateSession };

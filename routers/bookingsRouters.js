@@ -11,5 +11,23 @@ router.post(
 );
 router.get("/", auth, bookingController.listBookings);
 router.get("/:id", auth, bookingController.getBooking);
+router.put(
+  "/:id",
+  auth,
+  requireRole("customer"),
+  bookingController.updateBooking
+);
+router.delete(
+  "/:id",
+  auth,
+  requireRole("customer"),
+  bookingController.deleteBooking
+);
+router.put(
+  "/:id/confirm",
+  auth,
+  requireRole("business"),
+  bookingController.confirmOrCancelBooking
+);
 
 module.exports = router;

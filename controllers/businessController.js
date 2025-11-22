@@ -42,4 +42,5 @@ const getBusiness = asyncFnWrapper(async (req, res, next) => {
   res.json(b);
 });
 
+
 module.exports = { listBusinesses, getBusiness };
