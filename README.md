@@ -11,66 +11,165 @@ A robust and scalable RESTful API for managing class bookings, businesses, instr
 
 ## 📖 Table of Contents
 
-- [Project Description](#-project-description)
-- [Features](#-features)
+- [Project Overview](#-project-overview)
+- [Key Features](#-key-features)
 - [Technologies Used](#-technologies-used)
 - [Installation](#-installation)
-- [Running the Project](#-running-the-project)
+- [Running the Application](#-running-the-application)
 - [Environment Variables](#-environment-variables)
 - [API Documentation](#-api-documentation)
 - [Project Structure](#-project-structure)
 - [Database Schema](#-database-schema)
 - [Authentication & Authorization](#-authentication--authorization)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
+- [Advanced Features](#-advanced-features)
+- [Testing with Postman](#-testing-with-postman)
 
 ---
 
-## 🎯 Project Description
+## 🎯 Project Overview
 
-The **Booking Classes API** is a comprehensive backend solution designed for businesses offering class-based services (fitness studios, yoga centers, educational workshops, etc.). It enables:
+The **Booking Classes API** is a comprehensive backend solution designed for businesses offering class-based services such as fitness studios, yoga centers, educational workshops, and similar establishments. This API provides a complete booking management system with integrated payment handling through a credit-based system.
 
-- **User Management**: Customer and business account registration/authentication
-- **Business Management**: CRUD operations for service providers
-- **Class Sessions**: Schedule and manage classes with instructor assignments
-- **Booking System**: Real-time class booking with capacity management
-- **Credit System**: Prepaid credit packages and transaction tracking
-- **Instructor Management**: Profile and availability management
-- **Reviews & Analytics**: Rating system and business analytics
-- **Notifications**: Event-driven notification system
+### Use Cases
 
-### Key Backend Features
+- 🏋️ **Fitness Studios**: Manage gym classes, personal training sessions
+- 🧘 **Yoga Centers**: Schedule and book yoga classes
+- 📚 **Educational Workshops**: Book training sessions and courses
+- 🎨 **Creative Studios**: Manage art classes, music lessons
+- 💼 **Any Service Business**: Offering scheduled class-based services
 
-✅ **JWT-based Authentication** with role-based access control (RBAC)  
-✅ **RESTful API Architecture** following industry best practices  
-✅ **Rate Limiting & Security** using Helmet and Express Rate Limit  
-✅ **MongoDB with Mongoose** for flexible document-based storage  
-✅ **Error Handling** with centralized error management  
-✅ **Idempotency Support** for safe payment operations  
-✅ **Geolocation Support** for business location queries  
-✅ **Scalable Architecture** with modular MVC pattern
+---
+
+## ✨ Key Features
+
+### 🔐 Authentication & Authorization
+
+- **JWT-based Authentication** with secure token generation
+- **Role-Based Access Control (RBAC)** supporting `customer` and `business` roles
+- **Password Security** using bcryptjs hashing with salt rounds
+- **Token Validation** middleware for protected routes
+- **Email, Phone & Password Validation** using the validator library
+
+### 👥 User Management
+
+- User registration with role selection (customer/business)
+- Secure login with JWT token generation
+- User profile with avatars and contact information
+- Credit balance tracking per user
+- Get current authenticated user details
+
+### 🏢 Business Management
+
+- Business profile creation and management
+- **Geolocation Support** with 2dsphere indexing for location-based searches
+- Business search with filters (type, location, radius)
+- Rating and review system integration
+- Business amenities and images management
+- Contact information (email, phone)
+- Active/inactive status control
+
+### 📅 Class Session Management
+
+- Create and manage class sessions
+- Schedule classes with instructor assignment
+- Capacity management with booked spots tracking
+- Date range filtering for class searches
+- Class levels (beginner, intermediate, advanced)
+- Session status tracking (scheduled, cancelled, completed)
+- Recurring class pattern support
+- Credit requirement per class
+
+### 📝 Booking System
+
+- **Transaction-Safe Booking** using MongoDB transactions
+- Real-time capacity checking
+- Credit verification before booking
+- **Idempotency Support** to prevent duplicate bookings
+- Unique booking constraint (user + session)
+- Booking status management (pending, confirmed, cancelled, declined)
+- Business owner notifications for new bookings
+- Automatic credit deduction and transaction logging
+- Booking history and filtering by status
+- Role-based booking management (customers create, businesses confirm/cancel)
+
+### 💳 Credit System
+
+- Credit package management with pricing
+- Mock credit purchase flow (ready for payment gateway integration)
+- **Automatic Credit Transaction Logging**
+- Credit balance tracking
+- Transaction types: purchase, usage, refund, adjustment
+- Credit package popularity and discount support
+- Validity period for purchased credits
+
+### 👨‍🏫 Instructor Management
+
+- Instructor profile creation
+- Specialties and certifications tracking
+- Instructor ratings and total classes count
+- Bio and photo management
+- Business association
+- Active/inactive status
+
+### 🔔 Notification System
+
+- Event-driven notifications
+- Notification types for various events
+- Read/unread status tracking
+- Related entity linking (bookings, classes, etc.)
+- Action URL support for deep linking
+
+### ⭐ Reviews & Ratings
+
+- Business and session reviews
+- Star ratings (1-5)
+- Verified review system
+- Business response capability
+- Automatic rating aggregation
+
+### 📊 Analytics & Reporting
+
+- Business analytics tracking
+- Metrics collection
+- Date and period-based analytics
+- Performance monitoring
+
+### 🛡️ Security Features
+
+- **Helmet.js** for HTTP header security
+- **Rate Limiting** to prevent abuse and DDoS attacks
+- **CORS** configuration for cross-origin requests
+- Input validation and sanitization
+- Error message sanitization (no sensitive data exposure)
+- Environment variable protection
+
+### 🚀 Performance & Reliability
+
+- **Async/Await** error handling wrapper
+- MongoDB indexing for optimized queries
+- Geospatial queries with 2dsphere indexing
+- Pagination support for all list endpoints
+- Modular MVC architecture
+- Centralized error handling
 
 ---
 
 ## ⚡ Technologies Used
 
-| Technology             | Purpose                         |
-| ---------------------- | ------------------------------- |
-| **Node.js**            | JavaScript runtime environment  |
-| **Express.js 5.1.0**   | Web application framework       |
-| **MongoDB**            | NoSQL database                  |
-| **Mongoose 8.20.0**    | MongoDB ODM                     |
-| **JWT (jsonwebtoken)** | Token-based authentication      |
-| **bcryptjs**           | Password hashing                |
-| **Helmet**             | Security middleware             |
-| **Express Rate Limit** | API rate limiting               |
-| **CORS**               | Cross-Origin Resource Sharing   |
-| **Validator**          | Input validation                |
-| **dotenv**             | Environment variable management |
-| **Nodemon**            | Development auto-restart        |
+| Technology             | Version  | Purpose                         |
+| ---------------------- | -------- | ------------------------------- |
+| **Node.js**            | v18+     | JavaScript runtime environment  |
+| **Express.js**         | 5.1.0    | Web application framework       |
+| **MongoDB**            | Latest   | NoSQL database                  |
+| **Mongoose**           | 8.20.0   | MongoDB ODM                     |
+| **jsonwebtoken**       | 9.0.2    | JWT authentication              |
+| **bcryptjs**           | 3.0.3    | Password hashing                |
+| **Helmet**             | 8.1.0    | Security middleware             |
+| **express-rate-limit** | 8.2.1    | API rate limiting               |
+| **CORS**               | 2.8.5    | Cross-Origin Resource Sharing   |
+| **Validator**          | 13.15.23 | Input validation                |
+| **dotenv**             | 17.2.3   | Environment variable management |
+| **Nodemon**            | 3.1.11   | Development auto-restart        |
 
 ---
 
@@ -78,20 +177,20 @@ The **Booking Classes API** is a comprehensive backend solution designed for bus
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
+Ensure you have the following installed:
 
 - **Node.js** (v18.x or higher) - [Download](https://nodejs.org/)
 - **MongoDB** (v6.x or higher) - [Download](https://www.mongodb.com/try/download/community) or use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 - **npm** or **yarn** package manager
 - **Git** for version control
 
-### Step-by-Step Installation
+### Installation Steps
 
 1. **Clone the repository**
 
 ```bash
 git clone https://github.com/HossamAhmed954074/Booking-Classes-Api.git
-cd Booking-Classes-Api
+cd BookingClasses-api
 ```
 
 2. **Install dependencies**
@@ -108,7 +207,14 @@ Create a `.env` file in the root directory:
 touch .env
 ```
 
-Add the required environment variables (see [Environment Variables](#-environment-variables) section).
+Add the following environment variables (see [Environment Variables](#-environment-variables) section):
+
+```env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/booking-classes-db
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+JWT_EXPIRES_IN=7d
+```
 
 4. **Verify MongoDB connection**
 
@@ -118,12 +224,12 @@ Ensure your MongoDB instance is running:
 # For local MongoDB
 sudo systemctl status mongod
 
-# Or check MongoDB Atlas connection string
+# Or use MongoDB Atlas connection string
 ```
 
 ---
 
-## 🚀 Running the Project
+## 🚀 Running the Application
 
 ### Development Mode
 
@@ -135,27 +241,15 @@ npm start
 
 The server will start on `http://localhost:3000` (or your configured PORT).
 
-### Production Mode
+You should see:
 
-For production deployment:
-
-```bash
-# Set NODE_ENV to production in .env
-NODE_ENV=production node app.js
 ```
-
-### Available NPM Scripts
-
-```json
-{
-  "start": "nodemon app.js", // Development with auto-reload
-  "test": "echo \"Error: no test specified\" && exit 1"
-}
+🚀 Server is running on port 3000
 ```
 
 ### Verifying the Server
 
-Once running, test the API:
+Test the API root endpoint:
 
 ```bash
 curl http://localhost:3000/
@@ -166,7 +260,7 @@ curl http://localhost:3000/
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+Create a `.env` file in the root directory:
 
 ```env
 # Server Configuration
@@ -181,29 +275,17 @@ MONGODB_URI=mongodb://localhost:27017/booking-classes-db
 # JWT Configuration
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
 JWT_EXPIRES_IN=7d
-
-# Rate Limiting (optional)
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-
-# CORS Configuration (optional)
-CORS_ORIGIN=*
-
-# Application Settings
-API_VERSION=v1
 ```
 
-### Environment Variable Descriptions
+### Environment Variables Reference
 
-| Variable                  | Description                 | Default       | Required |
-| ------------------------- | --------------------------- | ------------- | -------- |
-| `PORT`                    | Server port number          | `3000`        | No       |
-| `NODE_ENV`                | Environment mode            | `development` | No       |
-| `MONGODB_URI`             | MongoDB connection string   | -             | **Yes**  |
-| `JWT_SECRET`              | Secret key for JWT signing  | -             | **Yes**  |
-| `JWT_EXPIRES_IN`          | JWT token expiration time   | `7d`          | No       |
-| `RATE_LIMIT_WINDOW_MS`    | Rate limit time window (ms) | `900000`      | No       |
-| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window     | `100`         | No       |
+| Variable         | Description                | Required | Default       |
+| ---------------- | -------------------------- | -------- | ------------- |
+| `PORT`           | Server port number         | No       | `3000`        |
+| `NODE_ENV`       | Environment mode           | No       | `development` |
+| `MONGODB_URI`    | MongoDB connection string  | **Yes**  | -             |
+| `JWT_SECRET`     | Secret key for JWT signing | **Yes**  | -             |
+| `JWT_EXPIRES_IN` | JWT token expiration time  | No       | `7d`          |
 
 ---
 
@@ -215,232 +297,864 @@ API_VERSION=v1
 http://localhost:3000/api/v1
 ```
 
-### Authentication Endpoints
+---
 
-#### Register User
+## 🔑 Authentication Endpoints
+
+### 1. Register User
 
 **POST** `/api/v1/auth/register`
 
+Register a new user account (customer or business).
+
+**Request Body:**
+
 ```json
-// Request Body
 {
   "name": "John Doe",
   "email": "john@example.com",
   "password": "SecurePass123!",
   "phone": "+1234567890",
-  "role": "customer"  // or "business"
-}
-
-// Response (201 Created)
-{
-  "status": "success",
-  "data": {
-    "user": {
-      "_id": "64abc123def456",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "role": "customer",
-      "credits": 0
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
+  "role": "customer"
 }
 ```
 
-#### Login User
+**Validation:**
+
+- `name`: Required
+- `email`: Required, valid email format
+- `password`: Required, strong password (min 8 chars, uppercase, lowercase, number, symbol)
+- `phone`: Required, valid mobile phone format
+- `role`: Optional, defaults to "customer" (options: "customer", "business")
+
+**Success Response (201 Created):**
+
+```json
+{
+  "message": "User registered successfully"
+}
+```
+
+**Error Response (400 Bad Request):**
+
+```json
+{
+  "status": "error",
+  "message": "User already exists"
+}
+```
+
+---
+
+### 2. Login User
 
 **POST** `/api/v1/auth/login`
 
+Authenticate user and receive JWT token.
+
+**Request Body:**
+
 ```json
-// Request Body
 {
   "email": "john@example.com",
   "password": "SecurePass123!"
 }
+```
 
-// Response (200 OK)
+**Success Response (200 OK):**
+
+```json
 {
-  "status": "success",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "_id": "64abc123def456",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "role": "customer"
-    }
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Response Headers:**
+
+```
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Error Response (401 Unauthorized):**
+
+```json
+{
+  "status": "error",
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+### 3. Get Current User
+
+**GET** `/api/v1/auth/me`
+
+Get currently authenticated user details.
+
+**Query Parameters or Headers:**
+
+```
+?token=<jwt_token>
+OR
+x-auth-token: <jwt_token>
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "user": {
+    "_id": "64abc123def456",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "customer",
+    "phone": "+1234567890",
+    "credits": 50,
+    "avatarUrl": "",
+    "createdAt": "2024-11-15T10:30:00.000Z"
   }
 }
 ```
 
 ---
 
-### Business Endpoints
+## 🏢 Business Endpoints
 
-#### Get All Businesses
+### 1. List All Businesses
 
 **GET** `/api/v1/businesses`
 
-```json
-// Response (200 OK)
-{
-  "status": "success",
-  "results": 15,
-  "data": {
-    "businesses": [
-      {
-        "_id": "64abc789def123",
-        "name": "Fitness Studio Pro",
-        "type": "Gym",
-        "description": "Premium fitness center",
-        "address": "123 Main St, New York",
-        "rating": 4.5,
-        "totalReviews": 120,
-        "images": ["url1.jpg", "url2.jpg"]
-      }
-    ]
-  }
-}
+Get all active businesses with optional filtering.
+
+**Query Parameters:**
+
+- `q` (string): Search query for business name/description
+- `type` (string): Filter by business type (e.g., "Gym", "Yoga Studio")
+- `lat` (number): Latitude for geolocation search
+- `lng` (number): Longitude for geolocation search
+- `radius` (number): Search radius in meters (default: 5000)
+- `page` (number): Page number for pagination (default: 1)
+- `limit` (number): Items per page (default: 20)
+
+**Example Request:**
+
+```bash
+GET /api/v1/businesses?type=Gym&lat=40.7128&lng=-74.0060&radius=10000&page=1&limit=10
 ```
 
-#### Get Business by ID
-
-**GET** `/api/v1/businesses/:id`
+**Success Response (200 OK):**
 
 ```json
-// Response (200 OK)
 {
-  "status": "success",
-  "data": {
-    "business": {
+  "items": [
+    {
       "_id": "64abc789def123",
-      "userId": "64abc123def456",
+      "userId": "64user123",
       "name": "Fitness Studio Pro",
       "type": "Gym",
       "description": "Premium fitness center with state-of-the-art equipment",
       "address": "123 Main St, New York, NY 10001",
       "location": {
         "type": "Point",
-        "coordinates": [-73.935242, 40.73061]
+        "coordinates": [-74.006, 40.7128]
       },
       "rating": 4.5,
       "totalReviews": 120,
       "images": ["url1.jpg", "url2.jpg"],
-      "amenities": ["Parking", "Showers", "WiFi"],
-      "createdAt": "2024-01-15T10:30:00.000Z"
+      "amenities": ["Parking", "Showers", "WiFi", "Lockers"],
+      "contactEmail": "info@fitnesspro.com",
+      "contactPhone": "+1234567890",
+      "isActive": true,
+      "distance": 2500.5,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-11-20T14:22:00.000Z"
     }
-  }
+  ],
+  "page": 1,
+  "limit": 10
 }
 ```
 
 ---
 
-### Class Session Endpoints
+### 2. Get Business by ID
 
-#### Get All Class Sessions
+**GET** `/api/v1/businesses/:id`
 
-**GET** `/api/v1/class-sessions`
+Get detailed information about a specific business.
 
-**Headers:**
-
-```
-Authorization: Bearer <jwt_token>
-```
-
----
-
-### Booking Endpoints
-
-#### Create Booking
-
-**POST** `/api/v1/bookings`
-
-**Headers:**
-
-```
-Authorization: Bearer <jwt_token>
-```
+**Success Response (200 OK):**
 
 ```json
-// Request Body
 {
-  "classSessionId": "64xyz789abc123",
-  "creditsUsed": 10
-}
-
-// Response (201 Created)
-{
-  "status": "success",
-  "data": {
-    "booking": {
-      "_id": "64booking123",
-      "userId": "64abc123def456",
-      "classSessionId": "64xyz789abc123",
-      "status": "confirmed",
-      "creditsUsed": 10,
-      "bookedAt": "2024-11-19T14:30:00.000Z"
-    }
-  }
-}
-```
-
----
-
-### Credit Endpoints
-
-#### Get User Credits
-
-**GET** `/api/v1/credits/balance`
-
-**Headers:**
-
-```
-Authorization: Bearer <jwt_token>
-```
-
-```json
-// Response (200 OK)
-{
-  "status": "success",
-  "data": {
-    "balance": 50,
-    "userId": "64abc123def456"
-  }
+  "_id": "64abc789def123",
+  "userId": "64user123",
+  "name": "Fitness Studio Pro",
+  "type": "Gym",
+  "description": "Premium fitness center",
+  "address": "123 Main St, New York",
+  "location": {
+    "type": "Point",
+    "coordinates": [-74.006, 40.7128]
+  },
+  "rating": 4.5,
+  "totalReviews": 120,
+  "images": ["url1.jpg"],
+  "amenities": ["Parking", "Showers"],
+  "contactEmail": "info@fitnesspro.com",
+  "contactPhone": "+1234567890",
+  "isActive": true
 }
 ```
 
----
-
-### Instructor Endpoints
-
-**GET** `/api/v1/instructors` - Get all instructors  
-**GET** `/api/v1/instructors/:id` - Get instructor by ID
-
----
-
-### Error Responses
-
-All error responses follow this format:
+**Error Response (404 Not Found):**
 
 ```json
 {
   "status": "error",
-  "message": "Detailed error message"
+  "message": "Business not found"
 }
 ```
 
-**Common HTTP Status Codes:**
+---
 
-| Code  | Description                             |
-| ----- | --------------------------------------- |
-| `200` | OK - Request successful                 |
-| `201` | Created - Resource created successfully |
-| `400` | Bad Request - Invalid input data        |
-| `401` | Unauthorized - Missing or invalid token |
-| `403` | Forbidden - Insufficient permissions    |
-| `404` | Not Found - Resource doesn't exist      |
-| `429` | Too Many Requests - Rate limit exceeded |
-| `500` | Internal Server Error                   |
+## 📅 Class Session Endpoints
+
+### 1. List All Class Sessions
+
+**GET** `/api/v1/class-sessions`
+
+Get all scheduled class sessions with optional filtering.
+
+**Query Parameters:**
+
+- `businessId` (ObjectId): Filter by business
+- `dateFrom` (ISO Date): Filter sessions from this date
+- `dateTo` (ISO Date): Filter sessions until this date
+- `level` (string): Filter by difficulty level
+- `page` (number): Page number (default: 1)
+- `limit` (number): Items per page (default: 20)
+
+**Example Request:**
+
+```bash
+GET /api/v1/class-sessions?businessId=64abc789def123&dateFrom=2024-11-22&dateTo=2024-11-30&level=beginner
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "items": [
+    {
+      "_id": "64session123",
+      "businessId": "64abc789def123",
+      "instructorId": "64instructor123",
+      "instructorName": "Jane Smith",
+      "name": "Morning Yoga",
+      "description": "Relaxing morning yoga session",
+      "date": "2024-11-25T00:00:00.000Z",
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "duration": 60,
+      "capacity": 20,
+      "bookedSpots": 15,
+      "credits": 10,
+      "level": "beginner",
+      "status": "scheduled",
+      "isRecurring": false,
+      "createdAt": "2024-11-20T10:00:00.000Z"
+    }
+  ],
+  "page": 1,
+  "limit": 20
+}
+```
+
+---
+
+### 2. Get Class Session by ID
+
+**GET** `/api/v1/class-sessions/:id`
+
+Get detailed information about a specific class session.
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64session123",
+  "businessId": "64abc789def123",
+  "instructorId": "64instructor123",
+  "instructorName": "Jane Smith",
+  "name": "Morning Yoga",
+  "description": "Relaxing morning yoga session",
+  "date": "2024-11-25T00:00:00.000Z",
+  "startTime": "08:00",
+  "endTime": "09:00",
+  "duration": 60,
+  "capacity": 20,
+  "bookedSpots": 15,
+  "availableSpots": 5,
+  "credits": 10,
+  "level": "beginner",
+  "status": "scheduled"
+}
+```
+
+---
+
+### 3. Create Class Session
+
+**POST** `/api/v1/class-sessions`
+
+Create a new class session (business role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Required Role:** `business` or `admin`
+
+**Request Body:**
+
+```json
+{
+  "businessId": "64abc789def123",
+  "instructorId": "64instructor123",
+  "instructorName": "Jane Smith",
+  "name": "Evening Pilates",
+  "description": "Core strengthening pilates class",
+  "date": "2024-11-26T00:00:00.000Z",
+  "startTime": "18:00",
+  "endTime": "19:00",
+  "duration": 60,
+  "capacity": 15,
+  "credits": 12,
+  "level": "intermediate",
+  "isRecurring": false
+}
+```
+
+**Success Response (201 Created):**
+
+```json
+{
+  "_id": "64newsession123",
+  "businessId": "64abc789def123",
+  "name": "Evening Pilates",
+  "status": "scheduled",
+  "bookedSpots": 0,
+  ...
+}
+```
+
+---
+
+### 4. Update Class Session
+
+**PUT** `/api/v1/class-sessions/:id`
+
+Update an existing class session (business role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Required Role:** `business` or `admin`
+
+**Request Body:** (partial update supported)
+
+```json
+{
+  "capacity": 20,
+  "credits": 15,
+  "status": "cancelled"
+}
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64session123",
+  "capacity": 20,
+  "credits": 15,
+  "status": "cancelled",
+  ...
+}
+```
+
+---
+
+## 📝 Booking Endpoints
+
+### 1. Create Booking
+
+**POST** `/api/v1/bookings`
+
+Create a new booking for a class session (customer role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+Idempotency-Key: <unique_key> (optional, recommended for payment operations)
+```
+
+**Required Role:** `customer`
+
+**Request Body:**
+
+```json
+{
+  "sessionId": "64session123",
+  "notes": "First time attending"
+}
+```
+
+**Process:**
+
+1. Validates session availability
+2. Checks user credit balance
+3. Creates booking with MongoDB transaction
+4. Deducts credits from user
+5. Logs credit transaction
+6. Increments booked spots
+7. Sends notification to business owner
+
+**Success Response (201 Created):**
+
+```json
+{
+  "_id": "64booking123",
+  "userId": "64user123",
+  "businessId": "64business123",
+  "sessionId": "64session123",
+  "status": "pending",
+  "credits": 10,
+  "bookingDate": "2024-11-25T00:00:00.000Z",
+  "notes": "First time attending",
+  "createdAt": "2024-11-22T15:10:00.000Z"
+}
+```
+
+**Error Responses:**
+
+- **402 Payment Required:**
+
+```json
+{
+  "status": "error",
+  "message": "Insufficient credits"
+}
+```
+
+- **409 Conflict:**
+
+```json
+{
+  "status": "error",
+  "message": "Class is full"
+}
+```
+
+or
+
+```json
+{
+  "status": "error",
+  "message": "Duplicate booking detected"
+}
+```
+
+---
+
+### 2. List Bookings
+
+**GET** `/api/v1/bookings`
+
+Get all bookings (filtered by role).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Query Parameters:**
+
+- `status` (string): Filter by status (pending, confirmed, cancelled, declined)
+- `page` (number): Page number (default: 1)
+- `limit` (number): Items per page (default: 20)
+
+**Behavior:**
+
+- **Customer role:** Returns only their own bookings
+- **Business role:** Returns all bookings for their business
+
+**Success Response (200 OK):**
+
+```json
+{
+  "items": [
+    {
+      "_id": "64booking123",
+      "userId": "64user123",
+      "businessId": "64business123",
+      "sessionId": "64session123",
+      "status": "pending",
+      "credits": 10,
+      "bookingDate": "2024-11-25T00:00:00.000Z",
+      "notes": "First time attending",
+      "createdAt": "2024-11-22T15:10:00.000Z"
+    }
+  ],
+  "page": 1,
+  "limit": 20
+}
+```
+
+---
+
+### 3. Get Booking by ID
+
+**GET** `/api/v1/bookings/:id`
+
+Get detailed information about a specific booking.
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Access Control:**
+
+- Customers can only view their own bookings
+- Businesses can view all bookings
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64booking123",
+  "userId": "64user123",
+  "businessId": "64business123",
+  "sessionId": "64session123",
+  "status": "pending",
+  "credits": 10,
+  "bookingDate": "2024-11-25T00:00:00.000Z",
+  "notes": "First time attending",
+  "confirmedAt": null,
+  "createdAt": "2024-11-22T15:10:00.000Z"
+}
+```
+
+---
+
+### 4. Update Booking
+
+**PUT** `/api/v1/bookings/:id`
+
+Update booking details (customer role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Required Role:** `customer`
+
+**Request Body:**
+
+```json
+{
+  "notes": "Updated notes"
+}
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64booking123",
+  "notes": "Updated notes",
+  ...
+}
+```
+
+---
+
+### 5. Confirm or Cancel Booking
+
+**PUT** `/api/v1/bookings/:id/confirmOrCancel`
+
+Confirm or cancel a booking (business role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Required Role:** `business`
+
+**Request Body:**
+
+```json
+{
+  "status": "confirmed"
+}
+```
+
+**Valid Status Values:**
+
+- `confirmed`
+- `cancelled`
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64booking123",
+  "status": "confirmed",
+  "confirmedAt": "2024-11-22T15:30:00.000Z",
+  ...
+}
+```
+
+---
+
+### 6. Delete Booking
+
+**DELETE** `/api/v1/bookings/:id`
+
+Delete a booking (customer role required).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Required Role:** `customer`
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64booking123",
+  "status": "cancelled",
+  ...
+}
+```
+
+---
+
+## 💳 Credit Endpoints
+
+### 1. List Credit Packages
+
+**GET** `/api/v1/credits/packages`
+
+Get all available credit packages.
+
+**Success Response (200 OK):**
+
+```json
+[
+  {
+    "_id": "64package123",
+    "name": "Starter Pack",
+    "credits": 10,
+    "priceUSD": 50,
+    "discountPercent": 0,
+    "isPopular": false,
+    "isActive": true,
+    "description": "Perfect for trying out our services",
+    "validityDays": 30,
+    "createdAt": "2024-01-10T00:00:00.000Z"
+  },
+  {
+    "_id": "64package456",
+    "name": "Premium Pack",
+    "credits": 50,
+    "priceUSD": 200,
+    "discountPercent": 20,
+    "isPopular": true,
+    "isActive": true,
+    "description": "Best value for regular users",
+    "validityDays": 90,
+    "createdAt": "2024-01-10T00:00:00.000Z"
+  }
+]
+```
+
+---
+
+### 2. Purchase Credit Package
+
+**POST** `/api/v1/credits/purchase`
+
+Purchase a credit package (authenticated users only).
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Request Body:**
+
+```json
+{
+  "packageId": "64package123"
+}
+```
+
+**Process:**
+
+1. Validates package existence
+2. Simulates payment (ready for payment gateway integration)
+3. Adds credits to user account
+4. Creates credit transaction record
+
+**Success Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "credits": 60
+}
+```
+
+**Error Response (404 Not Found):**
+
+```json
+{
+  "message": "Package not found"
+}
+```
+
+---
+
+## 👨‍🏫 Instructor Endpoints
+
+### 1. List All Instructors
+
+**GET** `/api/v1/instructors`
+
+Get all instructors.
+
+**Success Response (200 OK):**
+
+```json
+{
+  "items": [
+    {
+      "_id": "64instructor123",
+      "userId": "64user456",
+      "businessId": "64business123",
+      "name": "Jane Smith",
+      "bio": "Certified yoga instructor with 10 years experience",
+      "specialties": ["Yoga", "Pilates", "Meditation"],
+      "certifications": ["RYT-500", "CPR Certified"],
+      "photo": "photo_url.jpg",
+      "rating": 4.8,
+      "totalClasses": 250,
+      "isActive": true,
+      "createdAt": "2024-01-05T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### 2. Get Instructor by ID
+
+**GET** `/api/v1/instructors/:id`
+
+Get detailed information about a specific instructor.
+
+**Success Response (200 OK):**
+
+```json
+{
+  "_id": "64instructor123",
+  "userId": "64user456",
+  "businessId": "64business123",
+  "name": "Jane Smith",
+  "bio": "Certified yoga instructor",
+  "specialties": ["Yoga", "Pilates"],
+  "certifications": ["RYT-500"],
+  "photo": "photo_url.jpg",
+  "rating": 4.8,
+  "totalClasses": 250,
+  "isActive": true
+}
+```
+
+**Error Response (404 Not Found):**
+
+```json
+{
+  "status": "error",
+  "message": "Instructor not found"
+}
+```
+
+---
+
+### 3. Create Instructor
+
+**POST** `/api/v1/instructors`
+
+Create a new instructor profile.
+
+**Request Body:**
+
+```json
+{
+  "userId": "64user456",
+  "businessId": "64business123",
+  "name": "John Trainer",
+  "bio": "Professional fitness instructor",
+  "specialties": ["Strength Training", "HIIT"],
+  "certifications": ["ACE Certified", "CPR"],
+  "photo": "photo_url.jpg"
+}
+```
+
+**Success Response (201 Created):**
+
+```json
+{
+  "_id": "64newinstructor123",
+  "name": "John Trainer",
+  "rating": 0,
+  "totalClasses": 0,
+  "isActive": true,
+  ...
+}
+```
+
+**Error Response (400 Bad Request):**
+
+```json
+{
+  "status": "error",
+  "message": "Instructor with this userId already exists"
+}
+```
 
 ---
 
@@ -450,78 +1164,99 @@ All error responses follow this format:
 BookingClasses-api/
 ├── app.js                          # Application entry point
 ├── package.json                    # Dependencies and scripts
-├── .env                            # Environment variables (not in repo)
+├── .env                            # Environment variables (gitignored)
 ├── .gitignore                      # Git ignore rules
 │
-├── controllers/                    # Request handlers
-│   ├── authController.js           # Authentication logic
-│   ├── bookingsController.js       # Booking management
-│   ├── businessController.js       # Business CRUD operations
-│   ├── classSessionController.js   # Class session management
-│   ├── creditsController.js        # Credit system logic
-│   └── instructorsController.js    # Instructor management
+├── controllers/                    # Request handlers (Business Logic)
+│   ├── authController.js           # User registration, login, JWT authentication
+│   ├── bookingsController.js       # Booking CRUD with transaction safety
+│   ├── businessController.js       # Business management, geolocation search
+│   ├── classSessionController.js   # Class session CRUD operations
+│   ├── creditsController.js        # Credit package and purchase logic
+│   └── instructorsContrroler.js    # Instructor management
 │
-├── models/                         # Mongoose schemas
-│   ├── userModel.js                # User schema (customer/business)
-│   ├── businessModel.js            # Business schema
-│   ├── classSession.js             # Class session schema
-│   ├── bookingModel.js             # Booking schema
-│   ├── instructorModel.js          # Instructor schema
-│   ├── creditPackage.js            # Credit package schema
-│   ├── creditTransactionModel.js   # Credit transaction log
-│   ├── notificationModel.js        # Notification schema
-│   ├── reviewsModel.js             # Review and rating schema
-│   └── analyticsModel.js           # Analytics data schema
+├── models/                         # Mongoose schemas (Data Layer)
+│   ├── userModel.js                # User schema with JWT generation
+│   ├── businessModel.js            # Business with geolocation support
+│   ├── classSession.js             # Class session with capacity tracking
+│   ├── bookingModel.js             # Booking with unique constraint
+│   ├── instructorModel.js          # Instructor profiles
+│   ├── creditPackage.js            # Credit package pricing
+│   ├── creditTransictionModel.js   # Transaction logging
+│   ├── notificationModel.js        # Event notifications
+│   ├── reviewsModel.js             # Reviews and ratings
+│   └── analyticsModel.js           # Business analytics
 │
-├── routers/                        # Route definitions
-│   ├── auth.js                     # Auth routes (/register, /login)
-│   ├── businessRoutes.js           # Business routes
-│   ├── classSessionRouters.js      # Class session routes
-│   ├── bookingsRouters.js          # Booking routes
-│   ├── creditsRoutes.js            # Credit management routes
-│   └── instructorsRoutes.js        # Instructor routes
+├── routers/                        # Route definitions (API Layer)
+│   ├── auth.js                     # /api/v1/auth routes
+│   ├── businessRoutes.js           # /api/v1/businesses routes
+│   ├── classSessionRouters.js      # /api/v1/class-sessions routes
+│   ├── bookingsRouters.js          # /api/v1/bookings routes
+│   ├── creditsRoutes.js            # /api/v1/credits routes
+│   └── instructorsRoutes.js        # /api/v1/instructors routes
 │
 ├── middleware/                     # Custom middleware
 │   ├── authMW.js                   # JWT verification & RBAC
-│   ├── asyncWrapper.js             # Async error handler wrapper
-│   └── appLimiterMW.js             # Rate limiting middleware
+│   ├── asyncWraper.js              # Async error handler wrapper
+│   └── appLimiterMW.js             # Rate limiting configuration
 │
 ├── data/                           # Database configuration
-│   └── db.js                       # MongoDB connection setup
+│   └── db.js                       # MongoDB connection
 │
 ├── errors/                         # Error handling
 │   └── appError.js                 # Custom error class
 │
-└── utils/                          # Utility functions
-    ├── httpStatusConstant.js       # HTTP status code constants
-    └── idempotency.js              # Idempotency key handler
+├── utils/                          # Utility functions
+│   ├── httpStatusConstant.js       # HTTP status constants
+│   └── idempotency.js              # Idempotency key handler
+│
+└── Postman/                        # API Testing
+    ├── BookingClasses_API.postman_collection.json
+    └── BookingClasses_API.postman_environment.json
 ```
-
-### Architecture Explanation
-
-- **MVC Pattern**: Model-View-Controller separation for clean architecture
-- **Modular Routing**: Each resource has its own router file
-- **Middleware Layer**: Centralized authentication, validation, and rate limiting
-- **Error Handling**: Global error handler with custom error classes
-- **Database Abstraction**: Mongoose models for schema validation
-- **Utility Functions**: Reusable helpers for common operations
 
 ---
 
-## 🗄️ Database Schema Overview
+## 🗄️ Database Schema
 
-### Collections
+### ERD Overview
 
-#### **Users Collection**
+```
+┌─────────────┐       ┌──────────────┐       ┌─────────────────┐
+│    User     │──────▶│   Business   │──────▶│  ClassSession   │
+│             │       │              │       │                 │
+│  - credits  │       │  - location  │       │  - capacity     │
+│  - role     │       │  - rating    │       │  - bookedSpots  │
+└──────┬──────┘       └──────┬───────┘       └────────┬────────┘
+       │                     │                        │
+       │                     │                        │
+       ▼                     ▼                        ▼
+┌─────────────┐       ┌──────────────┐       ┌─────────────────┐
+│   Booking   │       │   Review     │       │   Instructor    │
+│             │       │              │       │                 │
+│  - status   │       │  - rating    │       │  - specialties  │
+└──────┬──────┘       └──────────────┘       └─────────────────┘
+       │
+       ▼
+┌──────────────────┐
+│ CreditTransaction│
+│                  │
+│  - type: usage   │
+└──────────────────┘
+```
+
+### Collections Details
+
+#### **users**
 
 ```javascript
 {
   _id: ObjectId,
   name: String,
-  email: String (unique),
-  password: String (hashed),
+  email: String (unique, validated),
+  password: String (bcrypt hashed),
   role: String (enum: ['customer', 'business']),
-  phone: String (unique),
+  phone: String (unique, validated),
   avatarUrl: String,
   credits: Number (default: 0),
   createdAt: Date,
@@ -529,7 +1264,18 @@ BookingClasses-api/
 }
 ```
 
-#### **Businesses Collection**
+**Indexes:**
+
+- `email` (unique)
+- `phone` (unique)
+
+**Methods:**
+
+- `genAuthToken()`: Generates JWT token
+
+---
+
+#### **businesses**
 
 ```javascript
 {
@@ -541,473 +1287,517 @@ BookingClasses-api/
   address: String,
   location: {
     type: String (default: 'Point'),
-    coordinates: [Number, Number] // [longitude, latitude]
+    coordinates: [Number, Number]  // [longitude, latitude]
   },
   rating: Number (0-5),
   totalReviews: Number,
   images: [String],
   amenities: [String],
-  operatingHours: Object,
+  contactEmail: String,
+  contactPhone: String,
+  isActive: Boolean,
   createdAt: Date,
   updatedAt: Date
 }
 ```
 
-#### **Class Sessions Collection**
+**Indexes:**
+
+- `location` (2dsphere for geospatial queries)
+
+---
+
+#### **class_sessions**
 
 ```javascript
 {
   _id: ObjectId,
-  businessId: ObjectId (ref: 'Business'),
+  businessId: ObjectId (ref: 'Business', indexed),
   instructorId: ObjectId (ref: 'Instructor'),
+  instructorName: String,
   name: String,
   description: String,
-  startTime: Date,
-  endTime: Date,
+  date: Date (indexed),
+  startTime: String,
+  endTime: String,
+  duration: Number,
   capacity: Number,
-  bookedCount: Number,
-  creditsRequired: Number,
-  status: String (enum: ['scheduled', 'ongoing', 'completed', 'cancelled']),
-  createdAt: Date
+  bookedSpots: Number (default: 0),
+  credits: Number,
+  level: String,
+  status: String (enum: ['scheduled', 'cancelled', 'completed'], indexed),
+  isRecurring: Boolean,
+  recurringPattern: Object,
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
-#### **Bookings Collection**
+**Indexes:**
+
+- `businessId`
+- `date`
+- `status`
+
+---
+
+#### **bookings**
+
+```javascript
+{
+  _id: ObjectId,
+  userId: ObjectId (ref: 'User', indexed),
+  businessId: ObjectId (ref: 'Business', indexed),
+  sessionId: ObjectId (ref: 'ClassSession', indexed),
+  status: String (enum: ['pending', 'confirmed', 'cancelled', 'declined'], indexed),
+  credits: Number,
+  bookingDate: Date,
+  notes: String,
+  confirmedAt: Date,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Indexes:**
+
+- `userId`
+- `businessId`
+- `sessionId`
+- `status`
+- **Unique Compound Index:** `{ userId: 1, sessionId: 1 }` (prevents duplicate bookings)
+
+---
+
+#### **instructors**
 
 ```javascript
 {
   _id: ObjectId,
   userId: ObjectId (ref: 'User'),
-  classSessionId: ObjectId (ref: 'ClassSession'),
-  businessId: ObjectId (ref: 'Business'),
-  status: String (enum: ['pending', 'confirmed', 'cancelled', 'completed']),
-  creditsUsed: Number,
-  bookedAt: Date,
-  cancelledAt: Date,
-  completedAt: Date
-}
-```
-
-#### **Instructors Collection**
-
-```javascript
-{
-  _id: ObjectId,
-  businessId: ObjectId (ref: 'Business'),
+  businessId: ObjectId (ref: 'Business', required),
   name: String,
-  email: String,
-  phone: String,
-  specialization: [String],
   bio: String,
-  avatarUrl: String,
+  specialties: [String],
+  certifications: [String],
+  photo: String,
   rating: Number,
   totalClasses: Number,
+  isActive: Boolean,
   createdAt: Date
 }
 ```
 
-#### **Credit Packages Collection**
+---
+
+#### **credit_packages**
 
 ```javascript
 {
   _id: ObjectId,
   name: String,
   credits: Number,
-  price: Number,
+  priceUSD: Number,
+  discountPercent: Number,
+  isPopular: Boolean,
+  isActive: Boolean,
   description: String,
   validityDays: Number,
-  isActive: Boolean
-}
-```
-
-#### **Credit Transactions Collection**
-
-```javascript
-{
-  _id: ObjectId,
-  userId: ObjectId (ref: 'User'),
-  amount: Number,
-  type: String (enum: ['purchase', 'debit', 'refund']),
-  description: String,
-  balanceAfter: Number,
   createdAt: Date
 }
 ```
 
-#### **Reviews Collection**
+---
+
+#### **credit_transactions**
+
+```javascript
+{
+  _id: ObjectId,
+  userId: ObjectId (ref: 'User', indexed),
+  type: String (enum: ['purchase', 'usage', 'refund', 'adjustment']),
+  amount: Number,
+  balance: Number,
+  credits: Number,
+  description: String,
+  paymentMethod: String,
+  paymentId: String,
+  bookingId: ObjectId (ref: 'Booking'),
+  priceUSD: Number,
+  createdAt: Date
+}
+```
+
+**Indexes:**
+
+- `userId`
+
+---
+
+#### **reviews**
 
 ```javascript
 {
   _id: ObjectId,
   userId: ObjectId (ref: 'User'),
   businessId: ObjectId (ref: 'Business'),
-  rating: Number (1-5),
+  sessionId: ObjectId (ref: 'ClassSession'),
+  bookingId: ObjectId (ref: 'Booking'),
+  rating: Number,
+  title: String,
   comment: String,
+  isVerified: Boolean,
+  response: {
+    text: String,
+    respondedAt: Date,
+    respondedBy: ObjectId
+  },
   createdAt: Date
 }
 ```
 
-#### **Notifications Collection**
+---
+
+#### **notifications**
 
 ```javascript
 {
   _id: ObjectId,
-  userId: ObjectId (ref: 'User'),
+  recipientId: ObjectId (ref: 'User', indexed),
   type: String,
   title: String,
   message: String,
-  isRead: Boolean,
+  relatedEntityType: String,
+  relatedEntityId: ObjectId,
+  isRead: Boolean (indexed),
+  actionUrl: String,
   createdAt: Date
 }
 ```
 
-#### **Analytics Collection**
+**Indexes:**
+
+- `recipientId`
+- `isRead`
+
+---
+
+#### **analytics**
 
 ```javascript
 {
   _id: ObjectId,
-  businessId: ObjectId (ref: 'Business'),
+  businessId: ObjectId (ref: 'Business', indexed),
   date: Date,
-  totalBookings: Number,
-  totalRevenue: Number,
-  totalClasses: Number,
-  cancellationRate: Number,
-  averageClassOccupancy: Number
+  period: String,
+  metrics: Object,
+  createdAt: Date
 }
 ```
+
+**Indexes:**
+
+- `businessId`
 
 ---
 
 ## 🔒 Authentication & Authorization
 
-### JWT (JSON Web Token) Authentication
+### JWT Authentication Flow
 
-This API uses **JWT-based authentication** for secure, stateless session management.
+1. **User Registration/Login** → Server generates JWT
+2. **Token Contains:**
+   - User ID
+   - Email
+   - Name
+   - Role
+   - Avatar URL
+   - Credits
+3. **Client Stores Token** (localStorage/cookie)
+4. **Authenticated Requests** → Include token in header:
+   ```
+   Authorization: Bearer <token>
+   ```
+5. **Server Validates Token** → Extract user info from JWT
 
-#### How It Works
-
-1. **User Registration/Login**: User provides credentials
-2. **Token Generation**: Server creates a JWT containing user data
-3. **Token Storage**: Client stores token (localStorage/sessionStorage)
-4. **Authenticated Requests**: Client sends token in Authorization header
-5. **Token Verification**: Server validates token on each request
-
-#### JWT Token Structure
+### JWT Token Structure
 
 ```javascript
-// Token Payload
 {
-  id: "user_id",
+  id: "64abc123def456",
   email: "user@example.com",
-  name: "User Name",
-  role: "customer" | "business",
-  avatarUrl: "url",
-  iat: 1700000000,  // Issued at
-  exp: 1700604800   // Expires at (7 days default)
+  name: "John Doe",
+  role: "customer",
+  avatarUrl: "https://...",
+  credits: 50,
+  iat: 1700000000,   // Issued at
+  exp: 1700604800    // Expires at (7 days)
 }
-```
-
-#### Making Authenticated Requests
-
-Include the JWT token in the Authorization header:
-
-```bash
-curl -H "Authorization: Bearer <your_jwt_token>" \
-     http://localhost:3000/api/v1/bookings
 ```
 
 ### Role-Based Access Control (RBAC)
 
-The API implements RBAC with two primary roles:
+| Route                                  | Method | Roles Allowed       | Description                      |
+| -------------------------------------- | ------ | ------------------- | -------------------------------- |
+| `/api/v1/auth/register`                | POST   | Public              | User registration                |
+| `/api/v1/auth/login`                   | POST   | Public              | User login                       |
+| `/api/v1/auth/me`                      | GET    | Public (with token) | Get current user                 |
+| `/api/v1/businesses`                   | GET    | Public              | List businesses                  |
+| `/api/v1/businesses/:id`               | GET    | Public              | Get business details             |
+| `/api/v1/class-sessions`               | GET    | Public              | List class sessions              |
+| `/api/v1/class-sessions/:id`           | GET    | Public              | Get session details              |
+| `/api/v1/class-sessions`               | POST   | `business`, `admin` | Create class session             |
+| `/api/v1/class-sessions/:id`           | PUT    | `business`, `admin` | Update class session             |
+| `/api/v1/bookings`                     | POST   | `customer`          | Create booking                   |
+| `/api/v1/bookings`                     | GET    | Authenticated       | List bookings (filtered by role) |
+| `/api/v1/bookings/:id`                 | GET    | Authenticated       | Get booking details              |
+| `/api/v1/bookings/:id`                 | PUT    | `customer`          | Update booking                   |
+| `/api/v1/bookings/:id`                 | DELETE | `customer`          | Delete booking                   |
+| `/api/v1/bookings/:id/confirmOrCancel` | PUT    | `business`          | Confirm/cancel booking           |
+| `/api/v1/credits/packages`             | GET    | Public              | List credit packages             |
+| `/api/v1/credits/purchase`             | POST   | Authenticated       | Purchase credits                 |
+| `/api/v1/instructors`                  | GET    | Public              | List instructors                 |
+| `/api/v1/instructors/:id`              | GET    | Public              | Get instructor details           |
+| `/api/v1/instructors`                  | POST   | Public              | Create instructor                |
 
-| Role         | Permissions                                                              |
-| ------------ | ------------------------------------------------------------------------ |
-| **customer** | Book classes, manage own bookings, purchase credits, write reviews       |
-| **business** | Create/manage classes, view analytics, manage instructors, view bookings |
+### Security Features
 
-#### Implementation Example
-
-```javascript
-// Protecting routes with authentication
-router.post("/bookings", auth, bookingController.create);
-
-// Protecting routes with role-based access
-router.post("/classes", auth, requireRole("business"), classController.create);
-```
-
-### Security Best Practices Implemented
-
-✅ **Password Hashing**: bcryptjs with salt rounds  
-✅ **JWT Expiration**: Tokens expire after 7 days  
-✅ **HTTP Headers Security**: Helmet middleware  
-✅ **Rate Limiting**: Prevents brute-force attacks  
-✅ **CORS Configuration**: Controlled cross-origin requests  
-✅ **Input Validation**: Validator library for email/phone  
-✅ **Error Message Sanitization**: No sensitive data in errors
+✅ **Password Hashing:** bcryptjs with 10 salt rounds  
+✅ **JWT Secret:** Environment-based secret key  
+✅ **Token Expiration:** Configurable (default 7 days)  
+✅ **Helmet.js:** Security headers  
+✅ **Rate Limiting:** Prevents brute-force attacks  
+✅ **CORS:** Controlled cross-origin access  
+✅ **Input Validation:** Email, phone, password strength validation  
+✅ **Error Sanitization:** No sensitive data in error responses
 
 ---
 
-## 🧪 Testing
+## 🚀 Advanced Features
 
-### Running Tests
+### 1. MongoDB Transactions
 
-Currently, the test suite is under development. To run tests:
+The booking system uses **MongoDB transactions** to ensure data consistency:
 
-```bash
-npm test
+```javascript
+// Pseudocode flow
+const session = await mongoose.startSession();
+session.startTransaction();
+try {
+  // 1. Check class availability
+  // 2. Verify user credits
+  // 3. Create booking
+  // 4. Deduct credits
+  // 5. Log transaction
+  // 6. Increment booked spots
+  // 7. Create notification
+  await session.commitTransaction();
+} catch (error) {
+  await session.abortTransaction();
+  throw error;
+}
 ```
 
-### Manual API Testing
+**Benefits:**
 
-Use tools like **Postman**, **Insomnia**, or **cURL** for manual testing:
+- Atomic operations
+- No partial failures
+- Data consistency guaranteed
 
-#### Using Postman
+---
 
-1. Import the API collection (create from endpoints above)
-2. Set up environment variables (BASE_URL, TOKEN)
-3. Test authentication flow first
-4. Use the returned token for protected routes
+### 2. Idempotency Support
 
-#### Using cURL
+Prevents duplicate bookings from network retries:
+
+**Usage:**
 
 ```bash
-# Register a new user
+POST /api/v1/bookings
+Idempotency-Key: unique-key-12345
+```
+
+**How it works:**
+
+1. First request with key → Process normally
+2. Duplicate request with same key → Return cached result
+3. No double-charging or duplicate bookings
+
+---
+
+### 3. Geolocation & Proximity Search
+
+**Find businesses within radius:**
+
+```bash
+GET /api/v1/businesses?lat=40.7128&lng=-74.0060&radius=5000
+```
+
+**Uses MongoDB's 2dsphere index:**
+
+- Fast geospatial queries
+- Distance calculation
+- Location-based filtering
+
+---
+
+### 4. Credit Transaction Logging
+
+Every credit change is logged:
+
+**Transaction Types:**
+
+- `purchase`: Bought credits
+- `usage`: Used for booking
+- `refund`: Booking cancellation refund
+- `adjustment`: Manual admin adjustment
+
+**Provides:**
+
+- Complete audit trail
+- Balance tracking
+- Transaction history
+
+---
+
+### 5. Automatic Notifications
+
+System automatically creates notifications:
+
+**Triggers:**
+
+- New booking → Notify business owner
+- Booking confirmed → Notify customer
+- Booking cancelled → Notify both parties
+- Class reminder → Notify attendees
+
+---
+
+### 6. Error Handling
+
+**Centralized error handler:**
+
+- Custom error class
+- HTTP status code mapping
+- Sanitized error messages
+- Development vs. production modes
+
+**Error Response Format:**
+
+```json
+{
+  "status": "error",
+  "message": "User-friendly error message"
+}
+```
+
+---
+
+### 7. Pagination
+
+All list endpoints support pagination:
+
+**Query Parameters:**
+
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 20)
+
+**Response:**
+
+```json
+{
+  "items": [...],
+  "page": 1,
+  "limit": 20
+}
+```
+
+---
+
+## 🧪 Testing with Postman
+
+### Import Postman Collection
+
+1. Open Postman
+2. Click **Import** button
+3. Select files:
+   - `BookingClasses_API.postman_collection.json`
+   - `BookingClasses_API.postman_environment.json`
+
+### Environment Variables
+
+Update the environment with:
+
+- `baseUrl`: `http://localhost:3000/api/v1`
+- `token`: Will be auto-set after login
+
+### Testing Workflow
+
+1. **Register User** → `POST /auth/register`
+2. **Login** → `POST /auth/login` → Token saved automatically
+3. **Get User Info** → `GET /auth/me`
+4. **List Businesses** → `GET /businesses`
+5. **List Class Sessions** → `GET /class-sessions`
+6. **Purchase Credits** → `POST /credits/purchase`
+7. **Create Booking** → `POST /bookings`
+8. **List My Bookings** → `GET /bookings`
+
+### Quick Test Commands
+
+```bash
+# Register
 curl -X POST http://localhost:3000/api/v1/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"Test123!","phone":"+1234567890"}'
+  -d '{"name":"Test User","email":"test@example.com","password":"Test123!@#","phone":"+1234567890"}'
 
 # Login
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"Test123!"}'
+  -d '{"email":"test@example.com","password":"Test123!@#"}'
 
-# Get businesses (authenticated)
-curl -X GET http://localhost:3000/api/v1/businesses \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
+# Get businesses
+curl http://localhost:3000/api/v1/businesses
 
-### Test Coverage Goals
-
-- [ ] Unit tests for controllers
-- [ ] Integration tests for API endpoints
-- [ ] Database mock tests
-- [ ] Authentication middleware tests
-- [ ] Error handling tests
-
----
-
-## 🚢 Deployment
-
-### Docker Deployment
-
-#### 1. Create Dockerfile
-
-Create a `Dockerfile` in the project root:
-
-```dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm ci --only=production
-
-COPY . .
-
-EXPOSE 3000
-
-CMD ["node", "app.js"]
-```
-
-#### 2. Create docker-compose.yml
-
-```yaml
-version: "3.8"
-
-services:
-  api:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongo:27017/booking-classes-db
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRES_IN=7d
-    depends_on:
-      - mongo
-    restart: unless-stopped
-
-  mongo:
-    image: mongo:6.0
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    restart: unless-stopped
-
-volumes:
-  mongo-data:
-```
-
-#### 3. Build and Run
-
-```bash
-# Build Docker image
-docker build -t booking-classes-api .
-
-# Run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f api
+# Create booking (with auth)
+curl -X POST http://localhost:3000/api/v1/bookings \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sessionId":"SESSION_ID"}'
 ```
 
 ---
 
-### Cloud Deployment Options
+## 📊 API Response Status Codes
 
-#### Option 1: Heroku
-
-```bash
-# Install Heroku CLI and login
-heroku login
-
-# Create new app
-heroku create booking-classes-api
-
-# Set environment variables
-heroku config:set JWT_SECRET=your_secret
-heroku config:set MONGODB_URI=your_mongodb_atlas_uri
-
-# Deploy
-git push heroku main
-
-# View logs
-heroku logs --tail
-```
-
-#### Option 2: AWS EC2
-
-1. **Launch EC2 instance** (Ubuntu 22.04)
-2. **Install Node.js and MongoDB**:
-   ```bash
-   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-   ```
-3. **Clone repository** and install dependencies
-4. **Use PM2** for process management:
-   ```bash
-   sudo npm install -g pm2
-   pm2 start app.js --name booking-api
-   pm2 startup
-   pm2 save
-   ```
-5. **Configure Nginx** as reverse proxy
-
-#### Option 3: DigitalOcean App Platform
-
-1. Connect GitHub repository
-2. Set environment variables in dashboard
-3. Deploy with one click
-
-#### Option 4: Render
-
-1. Connect GitHub repository
-2. Select Node.js environment
-3. Configure build and start commands
-4. Add environment variables
-5. Deploy automatically
+| Code | Status                | Description                             |
+| ---- | --------------------- | --------------------------------------- |
+| 200  | OK                    | Request successful                      |
+| 201  | Created               | Resource created successfully           |
+| 400  | Bad Request           | Invalid input data or missing fields    |
+| 401  | Unauthorized          | Missing or invalid authentication token |
+| 402  | Payment Required      | Insufficient credits                    |
+| 403  | Forbidden             | User doesn't have required permissions  |
+| 404  | Not Found             | Resource doesn't exist                  |
+| 409  | Conflict              | Duplicate booking or resource conflict  |
+| 429  | Too Many Requests     | Rate limit exceeded                     |
+| 500  | Internal Server Error | Unexpected server error                 |
 
 ---
 
-### Production Checklist
+## 🎯 Future Enhancements
 
-- [ ] Set `NODE_ENV=production`
-- [ ] Use strong `JWT_SECRET` (32+ characters)
-- [ ] Configure MongoDB Atlas with IP whitelist
-- [ ] Enable MongoDB authentication
-- [ ] Set up SSL/TLS certificates (Let's Encrypt)
-- [ ] Configure proper CORS origins
-- [ ] Set up application monitoring (New Relic, Datadog)
-- [ ] Configure logging (Winston, Morgan)
-- [ ] Set up automated backups for MongoDB
-- [ ] Implement CI/CD pipeline (GitHub Actions)
-- [ ] Configure rate limiting for production traffic
-- [ ] Set up health check endpoints
-- [ ] Use environment-specific configuration files
-
----
-
-## 🤝 Contributing
-
-We welcome contributions to the Booking Classes API! Here's how you can help:
-
-### Contribution Guidelines
-
-1. **Fork the repository**
-
-   ```bash
-   git clone https://github.com/HossamAhmed954074/Booking-Classes-Api.git
-   cd Booking-Classes-Api
-   ```
-
-2. **Create a feature branch**
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-3. **Make your changes**
-
-   - Follow the existing code style
-   - Write clear, descriptive commit messages
-   - Add comments for complex logic
-   - Update documentation if needed
-
-4. **Test your changes**
-
-   ```bash
-   npm test
-   ```
-
-5. **Commit with conventional commits**
-
-   ```bash
-   git commit -m "feat: add new booking validation"
-   git commit -m "fix: resolve credit deduction issue"
-   git commit -m "docs: update API documentation"
-   ```
-
-6. **Push to your fork**
-
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-7. **Open a Pull Request**
-   - Provide a clear description of changes
-   - Reference any related issues
-   - Ensure CI/CD checks pass
-
-### Code Style
-
-- Use **ES6+** syntax
-- Follow **camelCase** for variables and functions
-- Use **PascalCase** for models and classes
-- Add **JSDoc comments** for functions
-- Keep functions small and focused (single responsibility)
-- Use **async/await** over callbacks
-
-### Reporting Issues
-
-Found a bug? Have a feature request? Please [open an issue](https://github.com/HossamAhmed954074/Booking-Classes-Api/issues) with:
-
-- Clear title and description
-- Steps to reproduce (for bugs)
-- Expected vs actual behavior
-- Environment details (Node version, OS)
+- [ ] Real payment gateway integration (Stripe/PayPal)
+- [ ] Email notifications via SendGrid/Mailgun
+- [ ] SMS notifications via Twilio
+- [ ] Real-time updates using WebSockets
+- [ ] Admin dashboard and analytics
+- [ ] Class waitlist functionality
+- [ ] Recurring payment subscriptions
+- [ ] Multi-language support
+- [ ] Calendar integration (Google Calendar, iCal)
+- [ ] Automated testing suite
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
 
 ---
 
@@ -1015,66 +1805,27 @@ Found a bug? Have a feature request? Please [open an issue](https://github.com/H
 
 This project is licensed under the **ISC License**.
 
-```
-ISC License
+---
 
-Copyright (c) 2024, Booking Classes API
+## 🤝 Contributing
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📧 Contact
+## 👨‍💻 Contact
 
-### Project Maintainer
-
-**Hossam Ahmed**
-
-- 🔗 GitHub: [@HossamAhmed954074](https://github.com/HossamAhmed954074)
-- 📧 Email: [eltohamehossam@gmail.com](mailto:your.email@example.com)
-- 💼 LinkedIn: [https://www.linkedin.com/in/hossam-ahmed-ab4987248/](https://linkedin.com/in/yourprofile)
-
-### Support
-
-- 📖 **Documentation**: [Wiki](https://github.com/HossamAhmed954074/Booking-Classes-Api/wiki)
-- 🐛 **Bug Reports**: [Issues](https://github.com/HossamAhmed954074/Booking-Classes-Api/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/HossamAhmed954074/Booking-Classes-Api/discussions)
+For questions or support, please contact the development team.
 
 ---
 
-## 🙏 Acknowledgments
+## 📝 Notes
 
-- **Express.js** team for the excellent web framework
-- **Mongoose** for elegant MongoDB object modeling
-- **MongoDB** for the powerful NoSQL database
-- All contributors who help improve this project
-
----
-
-## 📊 Project Status
-
-![GitHub issues](https://img.shields.io/github/issues/HossamAhmed954074/Booking-Classes-Api)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/HossamAhmed954074/Booking-Classes-Api)
-![GitHub last commit](https://img.shields.io/github/last-commit/HossamAhmed954074/Booking-Classes-Api)
-
-**Current Version:** 1.0.0  
-**Status:** Active Development  
-**Last Updated:** November 19, 2025
+- This API is ready for production with proper environment configuration
+- Payment integration is currently mocked for development
+- MongoDB replica set is required for transaction support
+- Rate limiting is enabled by default (adjust in middleware if needed)
 
 ---
 
-<div align="center">
-  <p>Made with ❤️ by <a href="https://github.com/HossamAhmed954074">Hossam Ahmed</a></p>
-  <p>⭐ Star this repository if you find it helpful!</p>
-</div>
+**Built with ❤️ using Node.js, Express.js, and MongoDB**

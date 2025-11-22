@@ -1,0 +1,904 @@
+{
+	"info": {
+		"_postman_id": "booking-classes-api-collection",
+		"name": "Booking Classes API",
+		"description": "Complete API collection for Booking Classes platform with authentication, business management, class sessions, bookings, instructors, and credits",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "sessionId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bookingId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "businessId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "instructorId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "packageId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    console.log('User registered successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"StrongPass123!\",\n  \"phone\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user with name, email, password, and phone. Password must be strong (min 8 chars, uppercase, lowercase, number, symbol)."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('authToken', jsonData.token);",
+									"    console.log('Login successful, token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"StrongPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password. Returns JWT token in response and x-auth-token header."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('userId', jsonData.user._id);",
+									"    console.log('User info retrieved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/me?token={{authToken}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{authToken}}"
+								}
+							]
+						},
+						"description": "Get current authenticated user information. Token can be passed via query param or x-auth-token header."
+					},
+					"response": []
+				}
+			],
+			"description": "User authentication endpoints for registration, login, and getting current user info"
+		},
+		{
+			"name": "Businesses",
+			"item": [
+				{
+					"name": "List Businesses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.items && jsonData.items.length > 0) {",
+									"        pm.collectionVariables.set('businessId', jsonData.items[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/businesses?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"businesses"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Items per page"
+								},
+								{
+									"key": "q",
+									"value": "yoga",
+									"description": "Search query",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "gym",
+									"description": "Business type filter",
+									"disabled": true
+								},
+								{
+									"key": "lat",
+									"value": "40.7128",
+									"description": "Latitude for geo search",
+									"disabled": true
+								},
+								{
+									"key": "lng",
+									"value": "-74.0060",
+									"description": "Longitude for geo search",
+									"disabled": true
+								},
+								{
+									"key": "radius",
+									"value": "5000",
+									"description": "Search radius in meters (default 5000)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List all active businesses with optional filters: text search (q), type, location-based search (lat/lng/radius), pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Business by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/businesses/{{businessId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"businesses",
+								"{{businessId}}"
+							]
+						},
+						"description": "Get detailed information about a specific business by ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Business listing and details endpoints"
+		},
+		{
+			"name": "Class Sessions",
+			"item": [
+				{
+					"name": "List Class Sessions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.items && jsonData.items.length > 0) {",
+									"        pm.collectionVariables.set('sessionId', jsonData.items[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/class-sessions?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"class-sessions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "businessId",
+									"value": "{{businessId}}",
+									"description": "Filter by business ID",
+									"disabled": true
+								},
+								{
+									"key": "dateFrom",
+									"value": "2025-11-22",
+									"description": "Start date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "dateTo",
+									"value": "2025-12-31",
+									"description": "End date filter (YYYY-MM-DD)",
+									"disabled": true
+								},
+								{
+									"key": "level",
+									"value": "beginner",
+									"description": "Difficulty level filter",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List class sessions with optional filters: businessId, dateFrom, dateTo, level, pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Class Session by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/class-sessions/{{sessionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"class-sessions",
+								"{{sessionId}}"
+							]
+						},
+						"description": "Get detailed information about a specific class session including available spots"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Class Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"businessId\": \"{{businessId}}\",\n  \"name\": \"Morning Yoga Session\",\n  \"instructorName\": \"Jane Smith\",\n  \"description\": \"Relaxing morning yoga for all levels\",\n  \"date\": \"2025-11-25T09:00:00Z\",\n  \"startTime\": \"09:00\",\n  \"endTime\": \"10:00\",\n  \"duration\": 60,\n  \"capacity\": 20,\n  \"credits\": 1,\n  \"level\": \"beginner\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/class-sessions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"class-sessions"
+							]
+						},
+						"description": "Create a new class session. Requires authentication with 'business' or 'admin' role."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Class Session",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"capacity\": 25,\n  \"status\": \"scheduled\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/class-sessions/{{sessionId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"class-sessions",
+								"{{sessionId}}"
+							]
+						},
+						"description": "Update an existing class session. Requires authentication with 'business' or 'admin' role."
+					},
+					"response": []
+				}
+			],
+			"description": "Class session management endpoints for listing, viewing, creating and updating sessions"
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('bookingId', jsonData._id);",
+									"    console.log('Booking created successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "idempotency-key",
+								"value": "{{$guid}}",
+								"description": "Optional idempotency key to prevent duplicate bookings",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"notes\": \"Looking forward to this class!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings"
+							]
+						},
+						"description": "Create a new booking for a class session. Requires 'customer' role. Deducts credits from user account and uses MongoDB transactions for atomicity. Supports idempotency-key header."
+					},
+					"response": []
+				},
+				{
+					"name": "List Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "Filter by status: pending, confirmed, cancelled",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List bookings. Customers see only their own bookings, business users see all bookings."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings/{{bookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}"
+							]
+						},
+						"description": "Get details of a specific booking. Customers can only view their own bookings."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notes\": \"Updated notes for the booking\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings/{{bookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}"
+							]
+						},
+						"description": "Update booking details. Requires 'customer' role."
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm or Cancel Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings/{{bookingId}}/confirm",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}",
+								"confirm"
+							]
+						},
+						"description": "Confirm or cancel a booking. Requires 'business' role. Status must be 'confirmed' or 'cancelled'."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/bookings/{{bookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}"
+							]
+						},
+						"description": "Delete a booking. Requires 'customer' role."
+					},
+					"response": []
+				}
+			],
+			"description": "Booking management endpoints with transactional support, credit deduction, and role-based access"
+		},
+		{
+			"name": "Instructors",
+			"item": [
+				{
+					"name": "List Instructors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.items && jsonData.items.length > 0) {",
+									"        pm.collectionVariables.set('instructorId', jsonData.items[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/instructors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"instructors"
+							]
+						},
+						"description": "List all instructors"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Instructor by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/instructors/{{instructorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"instructors",
+								"{{instructorId}}"
+							]
+						},
+						"description": "Get details of a specific instructor"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Instructor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"phone\": \"+1234567891\",\n  \"bio\": \"Certified yoga instructor with 10+ years experience\",\n  \"specialties\": [\"Yoga\", \"Pilates\", \"Meditation\"],\n  \"certifications\": [\"RYT-500\", \"Pilates Certified\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/instructors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"instructors"
+							]
+						},
+						"description": "Create a new instructor"
+					},
+					"response": []
+				}
+			],
+			"description": "Instructor management endpoints"
+		},
+		{
+			"name": "Credits",
+			"item": [
+				{
+					"name": "List Credit Packages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        pm.collectionVariables.set('packageId', jsonData[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/credits/packages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"credits",
+								"packages"
+							]
+						},
+						"description": "List all active credit packages available for purchase"
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase Credit Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": \"{{packageId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/credits/purchase",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"credits",
+								"purchase"
+							]
+						},
+						"description": "Purchase a credit package. This is a mock implementation - in production would integrate with payment provider like Stripe/PayPal. Credits are immediately added to user account."
+					},
+					"response": []
+				}
+			],
+			"description": "Credit package listing and purchase endpoints"
+		}
+	]
+}
