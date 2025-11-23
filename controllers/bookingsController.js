@@ -171,9 +171,14 @@ const listBookings = asyncFnWrapper(async (req, res, next) => {
   if (req.user.role === "customer") filter.userId = req.user._id;
   if (status) filter.status = status;
   const items = await Booking.find(filter)
+    .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(parseInt(limit))
+    .populate("userId", "name email") 
+    .populate("sessionId", "name date") 
     .lean();
+ 
+
   res.json({ items, page: parseInt(page), limit: parseInt(limit) });
 });
 
