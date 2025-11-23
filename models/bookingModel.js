@@ -1,8 +1,8 @@
 const { Schema: SB, model: MB } = require("mongoose");
 const bookingSchema = new SB({
-  userId: { type: SB.Types.ObjectId, ref: "User", index: true },
+  userId: { type: SB.Types.ObjectId, ref: "user", index: true },
   businessId: { type: SB.Types.ObjectId, ref: "Business", index: true },
-  sessionId: { type: SB.Types.ObjectId, ref: "ClassSession", index: true },
+  sessionId: { type: SB.Types.ObjectId, ref: "class_session", index: true },
   status: {
     type: String,
     default: "pending",

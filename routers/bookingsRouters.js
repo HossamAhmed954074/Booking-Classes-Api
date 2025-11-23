@@ -9,7 +9,7 @@ router.post(
   requireRole("customer"),
   bookingController.createBooking
 );
-router.get("/", auth, bookingController.listBookings);
+router.get("/", auth, requireRole("business"), bookingController.listBookings);
 router.get("/:id", auth, bookingController.getBooking);
 router.put(
   "/:id",
